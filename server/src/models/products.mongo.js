@@ -8,7 +8,7 @@ const productScheam = new mongoose.Schema({
     type : Number,
     required:[true, 'Product price must be provided '],
   },
-  ratings: {
+  rating: {
     type :Number,
     default:0,
     min: ['Ratin1 ,g must be above 1'],
