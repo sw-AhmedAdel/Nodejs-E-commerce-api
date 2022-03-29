@@ -5,7 +5,7 @@ const path = require('path');
 async function populateAllProducts() {
   const getProducts = JSON.parse( fs.readFileSync(path.join(__dirname,'..','..', 'data', 'products.json')));
   for(const Product of getProducts) {
-    console.log(Product);
+   
     await CreateNewProduct(Product);
   }
 }
@@ -22,6 +22,7 @@ async function loadALLProducts() {
       console.log('all products already exits');
     }
     else {
+      console.log('loading all products')
       await populateAllProducts();
     }
 }
@@ -31,8 +32,8 @@ async function CreateNewProduct (Product) {
   await newProduct.save();
 }
 
-async function GetAllProducts () {
-  return await products.find();
+async function GetAllProducts (filter) {
+  return await products.find(filter);
 }
 
 module.exports = {
