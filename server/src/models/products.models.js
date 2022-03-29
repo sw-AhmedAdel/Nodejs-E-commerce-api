@@ -32,10 +32,12 @@ async function CreateNewProduct (Product) {
   await newProduct.save();
 }
 
-async function GetAllProducts (filter , skip , limit) {
+async function GetAllProducts (filter , skip , limit ,sort ,fields) {
   return await products.find(filter)
   .skip(skip)
-  .limit(limit);
+  .limit(limit)
+  .select(fields)
+  .sort(sort);
 }
 
 module.exports = {

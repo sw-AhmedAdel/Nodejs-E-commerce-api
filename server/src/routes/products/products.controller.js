@@ -2,7 +2,8 @@ const {
    GetAllProducts,
 } = require('../../models/products.models');
 const {
-  getPagination
+  getPagination,
+  filterFun
 } = require('../../services/query');
 
 async function httpGetAllProducts (req , res) {
@@ -11,17 +12,29 @@ async function httpGetAllProducts (req , res) {
   if(featurd) {
     obj.featurd ==='true' ? true : false;
   }*/
+  try{
   const {skip , limit} =getPagination(req.query);
   const filter = {...req.query};
   const execludeFileds = ['page', 'limit','sort','fields'];
   execludeFileds.forEach((el) => delete filter[el]);
+  
+  const features = new filterFun(req.query , filter);
+  const finalFilter = features.filterFun();
+  const sort = features.sortBy();
+  const fields = features.fieldsFilter();
 
-  const products = await GetAllProducts(filter , skip , limit);
+  const products = await GetAllProducts(finalFilter , skip , limit ,sort , fields) ;
   return res.status(200).json({
     status:'success',
     results:products.length,
     data : products
   })
+ }
+ catch(err) {
+   return res.status(400).json({
+     error: 'can not get the data'
+   })
+ }
 }
 
 module.exports = {
