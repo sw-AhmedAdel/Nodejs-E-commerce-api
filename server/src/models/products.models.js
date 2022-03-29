@@ -5,6 +5,7 @@ const path = require('path');
 async function populateAllProducts() {
   const getProducts = JSON.parse( fs.readFileSync(path.join(__dirname,'..','..', 'data', 'products.json')));
   for(const Product of getProducts) {
+    console.log(Product);
     await CreateNewProduct(Product);
   }
 }
