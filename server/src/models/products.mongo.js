@@ -11,7 +11,7 @@ const productScheam = new mongoose.Schema({
   rating: {
     type :Number,
     default:0,
-    min: ['Ratin1 ,g must be above 1'],
+    min: [1 ,'Ratin1 ,g must be above 1'],
     max: [5,, 'Rating must be bellow or equal 5.0'],
   },
   featured : {
