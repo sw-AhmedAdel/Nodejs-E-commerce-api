@@ -1,9 +1,13 @@
 const {
    GetAllProducts,
+   GetProductsByPrice
 } = require('../../models/products.models');
+
+
 const {
   getPagination,
-  filterFun
+  filterFun,
+  
 } = require('../../services/query');
 
 async function httpGetAllProducts (req , res) {
@@ -37,6 +41,17 @@ async function httpGetAllProducts (req , res) {
  }
 }
 
+async function httpGetProductsByPrice (req , res) {
+    const {min , max} = req.query;
+    const products = await GetProductsByPrice(Number(min) , Number(max));
+    return res.status(200).json({
+      status:'success',
+      data : products
+    })
+
+}
+
 module.exports = {
   httpGetAllProducts,
+  httpGetProductsByPrice,
 }

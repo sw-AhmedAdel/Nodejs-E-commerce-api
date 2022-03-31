@@ -39,9 +39,53 @@ async function GetAllProducts (filter , skip , limit ,sort ,fields) {
   .select(fields)
   .sort(sort);
 }
+async function GetProductsByPrice (min , max) {
+  const prod = await products.aggregate([
+    {
+     $unwind:'$price',
+    }
+    ,
+    {
+     $match : {
+      price :{
+        $gte:min ,
+        $lte:max,
+      }
+     }
+    }
+    ,
+    {
+      $group: {
+        _id : '$price',
+        numProducts : {$sum : 1},
+        products: {$push : '$name'},
+      }
+    }
+    ,
+    {
+      $sort: {
+        price: 1
+      }
+    }
+    ,
+    {
+     $addFields: {
+       price :'$_id'
+     }
+    },
+
+    {
+      $project: {
+        _id: 0
+      }
+    }
+  ])
+  return prod;
+}
 
 module.exports = {
   loadALLProducts,
   CreateNewProduct,
-  GetAllProducts
+  GetAllProducts,
+  GetProductsByPrice
 }
