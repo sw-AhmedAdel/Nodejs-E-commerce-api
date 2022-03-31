@@ -3,10 +3,12 @@ const productsRoute = express.Router();
 const {
   httpGetAllProducts,
   httpGetProductsByPrice,
-  httpGetProductsStats
+  httpGetProductsStats,
+  httpGetProductsForEachCompany
 }  = require('./products.controller');
 
 productsRoute.get('/' , httpGetAllProducts);
 productsRoute.get('/min/max/price',httpGetProductsByPrice)
-productsRoute.get('/company' , httpGetProductsStats);
+productsRoute.get('/stats' , httpGetProductsStats);
+productsRoute.get('/company',httpGetProductsForEachCompany)
 module.exports= productsRoute;

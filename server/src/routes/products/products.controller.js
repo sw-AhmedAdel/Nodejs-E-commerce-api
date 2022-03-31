@@ -2,6 +2,7 @@ const {
    GetAllProducts,
    GetProductsByPrice,
    GetProductsStats
+   ,GetProductsForEachCompany
 } = require('../../models/products.models');
 
 
@@ -54,17 +55,25 @@ async function httpGetProductsByPrice (req , res) {
 
 async function httpGetProductsStats (req , res) {
 
-  const products = await getProductsStates();
+  const products = await GetProductsStats();
   return res.status(200).json({
     status:'success',
     data : products
   })
 
+}
 
+async function httpGetProductsForEachCompany(req , res) {
+  const products = await GetProductsForEachCompany ();
+  return res.status(200).json({
+    status:'success',
+    data : products
+  })
 }
 
 module.exports = {
   httpGetAllProducts,
   httpGetProductsByPrice,
-  httpGetProductsStats
+  httpGetProductsStats,
+  httpGetProductsForEachCompany
 }

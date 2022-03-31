@@ -122,10 +122,56 @@ async function GetProductsStats () {
   return prod;
 }
 
+async function GetProductsForEachCompany () {
+  
+  const prod = await products.aggregate([
+     
+    {
+      $unwind : '$company'
+    }
+    ,
+    {
+      $match: {
+        price :{
+          $gte :0,
+        }
+      }
+    }
+    ,
+    {
+      $group: {
+        _id :'$company',
+        numProducts:{$sum : 1},
+        products: {$push : '$name'},
+      }
+    }
+    ,
+    {
+      $sort: {
+        company: 1,
+      }
+    }
+    ,
+    {
+      $addFields: {
+        company_name : '$_id',
+      }
+    },
+
+    {
+      $project: {
+        _id: 0,
+      }
+    }
+  ])
+  return prod;
+}
+
 module.exports = {
   loadALLProducts,
   CreateNewProduct,
   GetAllProducts,
   GetProductsByPrice,
-  GetProductsStats
+  GetProductsStats,
+  GetProductsForEachCompany
 }
