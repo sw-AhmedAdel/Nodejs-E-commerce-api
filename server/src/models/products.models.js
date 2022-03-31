@@ -83,9 +83,49 @@ async function GetProductsByPrice (min , max) {
   return prod;
 }
 
+async function GetProductsStats () {
+  const prod = await products.aggregate([
+
+    {
+    $match: {
+      price :{
+       $gte :0
+      }
+    }
+    }
+    ,
+    {
+    $group : {
+      _id :'$company',
+      numProducts: {$sum : 1},
+      minPrice : {$min :'$price'},
+      maxPrice :{$max :'$price'},
+      avgPrice: {$avg:'$price'},
+
+    } 
+    }
+    , 
+    {
+      $addFields: {
+        company_name :'$_id',
+      }
+    }
+    ,
+
+    {
+      $project:{
+        _id:0
+      }
+    }
+    
+  ])
+  return prod;
+}
+
 module.exports = {
   loadALLProducts,
   CreateNewProduct,
   GetAllProducts,
-  GetProductsByPrice
+  GetProductsByPrice,
+  GetProductsStats
 }
