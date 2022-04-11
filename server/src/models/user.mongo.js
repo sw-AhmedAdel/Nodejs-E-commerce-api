@@ -84,7 +84,7 @@ userScheam.pre('save' , function(next){
   next();
 })
 
-userScheam.methods.passwordResetToken = async function () {
+userScheam.methods.createpasswordResetToken = async function () {
   const user = this;
   const token = crypto.randomBytes(32).toString('hex');
   user.passwordResetToken= crypto.createHash('sha256').update(token).digest('hex');
