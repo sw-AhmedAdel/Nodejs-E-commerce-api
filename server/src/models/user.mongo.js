@@ -46,7 +46,7 @@ const userScheam = new mongoose.Schema({
      type: Boolean,
      default: true,
    },
-
+   passwordChangedAt : Date,
    passwordResetToken : String,
    passwordTokenExpires: Date,
 },{
@@ -63,6 +63,39 @@ userScheam.methods.toJSON= function(){
   return userObject;
 }*/
 
+
+
+
+userScheam.methods.changePasswordAfter = function(jwtTime) {
+   const user = this;
+   if(user.passwordChangedAt) {
+   const userPasswordTime = parseInt(user.passwordChangedAt.getTime() /1000 , 10);
+   return jwtTime << userPasswordTime
+   }
+   return false;
+}
+
+userScheam.pre('save' , function(next){
+  if(this.isNew || !this.isModified('password'))
+  {
+    return next();
+  }
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+})
+
+userScheam.methods.passwordResetToken = async function () {
+  const user = this;
+  const token = crypto.randomBytes(32).toString('hex');
+  user.passwordResetToken= crypto.createHash('sha256').update(token).digest('hex');
+  user.passwordTokenExpires = Date.now() + 10 * 60 * 1000; // 10 mints
+  await user.save(); 
+  return token;
+}
+
+userScheam.methods.comparePassword = async function( candidatePassword , currentPassword) {
+  return await bcrypt.compare(candidatePassword , currentPassword);
+}
 
 userScheam.statics.findByrCedenitals= async function(email , password) {
   const user = await User.findOne({
