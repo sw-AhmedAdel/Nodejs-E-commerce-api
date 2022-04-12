@@ -14,15 +14,20 @@ const {
   catchAsync
 } =require('../../services/query');
 
+const auth = require('../../authController/auth');
+const admin = require('../../authController/admin');
+ 
 userRoute.post('/signup' , catchAsync(httpCreateUSer));
 userRoute.post('/login' , catchAsync(httpLoginUser));
 
-
-userRoute.get('/', catchAsync(httpGetAllUsers));
-userRoute.post('/update/me', catchAsync(httpUpdateUSer));
-userRoute.post('/delete/me', catchAsync(httpDeleteUser));
-
+ 
+userRoute.use(auth);
+userRoute.patch('/update/me', catchAsync(httpUpdateUSer));
+userRoute.delete('/delete/me', catchAsync(httpDeleteUser));
 userRoute.get('/logout', httpLogout);
 
+
+
 userRoute.get('/get/user/:id' , catchAsync(httpGetOneUser));
+userRoute.get('/'  , catchAsync(httpGetAllUsers));
 module.exports = userRoute;

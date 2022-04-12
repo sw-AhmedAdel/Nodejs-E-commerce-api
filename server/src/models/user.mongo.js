@@ -11,7 +11,7 @@ const userScheam = new mongoose.Schema({
     type: String,
     required:[true , 'User must have a name'],
     minlength:[4,'User name must have more or equal 6 chars '],
-    maxlength:[15,'User name must be leass  or equal 15 chars '],
+    maxlength:[30,'User name must be leass  or equal 15 chars '],
   },
    email: {
      type: String,
@@ -113,7 +113,7 @@ userScheam.statics.findByrCedenitals= async function(email , password) {
 
 userScheam.methods.getAuthToken = function() {
   const user = this;
-  const token = jwt.sign({_id : user._id.toString()}, process.env.JWT_SECRET ,{expiresIn: process.env.JWT_EXPIRES_IN})
+  const token = jwt.sign({_id : user._id.toString()}, process.env.JWT_SECRET ,{expiresIn:'2s'})
   return token;
 }
 

@@ -16,6 +16,7 @@ function filterUser (obj , ...arr) {
       filter[el] = obj[el]
     }
   })
+  return filter;
 }
 
 
@@ -29,6 +30,7 @@ async function httpCreateUSer(req , res ,next) {
 }
 
 async function httpGetAllUsers(req, res ,next) {
+
   const users = await GetAllUsers();
   return res.status(200).json({
     status:'success',
@@ -53,8 +55,10 @@ async function httpUpdateUSer (req , res , next) {
   if(req.body.password || req.body.passwordConfirm) {
    return next(new appError('please update password from v1/users/updatepassword', 400));
   }
+ 
   const id = req.user._id;
   const filter = filterUser(req.body , 'name','email');
+ 
   const user =await UpdateUSer(filter , id);
   return res.status(200).json({
     status:'success',
@@ -63,11 +67,10 @@ async function httpUpdateUSer (req , res , next) {
 }
 
 async function httpDeleteUser(req , res ,next) {
-  const id = req.user._id;
-  const user = await DeleteUser(id);
-  if(!user) {
-    return next(new appError('something went wrong,please try again in fer mints', 400));
-  }
+ 
+  const id = req.user._id; 
+  await DeleteUser(id);
+ 
   return res.status(200).json({
     status:'success',
     messae:'Your account has been deleted'

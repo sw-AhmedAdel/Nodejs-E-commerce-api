@@ -1,7 +1,12 @@
-const { compareSync } = require('bcrypt');
+
 const appError = require('./class.handel.error');
 require('dotenv').config();
 
+const handleJWTError = () =>
+new appError('Invalid token. Please log in again!', 401);
+
+const handleJWTExpiredError = () =>
+new appError('Your token has expired! Please log in again.', 401);
 
 function InvalidId(err) {
   const messae = `Invalid input path:${err.path}, value:${err.value}`
@@ -69,6 +74,9 @@ function handelErrorMiddleware (err , req , res , next)  {
     if(err.name==='CastError' && err.kind==='ObjectId') {
         err = InvalidId (err);
       }
+
+     if (err.name === 'JsonWebTokenError') err = handleJWTError();
+     if (err.name === 'TokenExpiredError') err = handleJWTExpiredError();
   
        sendProdError(err, res);    
    } 

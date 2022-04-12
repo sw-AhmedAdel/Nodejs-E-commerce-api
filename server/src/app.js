@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const handelErrorMiddleware = require('./handelErrors/handel.middlware.errors');
+const handlingErrorMiddleware = require('./handelErrors/handel.middlware.errors');
 const api =require('./routes/api');
 const cookieParser = require('cookie-parser');
 const appError = require('./handelErrors/class.handel.error');
@@ -15,7 +15,7 @@ app.all('*', (req , res ,next) => {
   return next(new appError(`could not find ${req.originalUrl} on this server`, 404));
 })
 
-app.use(handelErrorMiddleware);
+app.use(handlingErrorMiddleware);
 
 
 module.exports= app;

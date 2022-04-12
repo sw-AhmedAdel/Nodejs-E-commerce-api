@@ -3,6 +3,11 @@ const app = require('./app');
 const server = http.createServer(app);
 require('dotenv').config();
 const PORT = process.env.PORT;
+process.on('uncaughtException', err => {
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  process.exit(1);
+});
 
 const {startMongo} = require('./services/mongo');
 const {loadALLProducts} = require('../src/models/products.models');
@@ -24,10 +29,18 @@ async function startServer () {
     await products.deleteMany();
     await loadALLProducts();
   }
-  //await users.deleteMany();
+  await users.deleteMany();
   server.listen(PORT , () => {
   console.log('running server');
   })
 }
 
 startServer();
+
+process.on('unhandledRejection', err => {
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});

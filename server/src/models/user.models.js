@@ -31,10 +31,10 @@ async function UpdateUSer (Updateuser , id) {
 
 
 async function DeleteUser (id) {
-  const user = await findByIdAndUpdate(id , {
+  const user = await User.findByIdAndUpdate(id , {
     active: false
   })
-
+  
   return user.acknowledgement === true;
 }
 
