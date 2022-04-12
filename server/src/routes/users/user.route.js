@@ -4,7 +4,8 @@ const {
   httpCreateUSer,
   httpGetAllUsers,
   httpLoginUser,
-  httpLogout
+  httpLogout,
+  httpGetOneUser
 } = require('./user.controller');
 
 const {
@@ -16,4 +17,6 @@ userRoute.post('/login' , catchAsync(httpLoginUser));
 
 userRoute.get('/', catchAsync(httpGetAllUsers));
 userRoute.get('/logout', httpLogout);
+
+userRoute.get('/get/user/:id' , catchAsync(httpGetOneUser));
 module.exports = userRoute;

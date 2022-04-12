@@ -24,6 +24,17 @@ async function httpGetAllUsers(req, res ,next) {
   })
 }
 
+async function httpGetOneUser (req , res ,next) {
+  const id = req.params.id;
+  const user = await FindUser(id);
+  if(!user) {
+    return next(new appError('User is not exits', 404));
+  }
+  return res.status(200).json({
+    user,
+  })
+}
+
 async function httpLoginUser (req , res ,next) {
   const {email , password} = req.body;
   if(!email || !password) {
@@ -57,5 +68,6 @@ module.exports = {
   httpCreateUSer,
   httpGetAllUsers,
   httpLoginUser,
-  httpLogout
+  httpLogout,
+  httpGetOneUser
 }

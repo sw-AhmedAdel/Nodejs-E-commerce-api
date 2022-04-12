@@ -2,13 +2,17 @@ const { compareSync } = require('bcrypt');
 const appError = require('./class.handel.error');
 require('dotenv').config();
 
+
+function InvalidId(err) {
+  const messae = `Invalid input path:${err.path}, value:${err.value}`
+  return new appError(messae, 400);
+}
+
 function MongooseHandelErrors (err) {
   const errors = Object.values(err.errors).map(el => el.message);
   const message = `Invalid input data ${errors.join('. ')}`;
   return new appError(message , 400);
 }
-
-
 
 function DublicateData(error) {
   const value = Object.values(error.keyValue);
@@ -53,14 +57,19 @@ function handelErrorMiddleware (err , req , res , next)  {
    } 
    else  if( process.env.NODE_ENV === 'production'  ){
       
-      if(err.statusCode ===500){
+  
+    if(err.code ===11000){
         err= DublicateData(err);
       }
 
-      if(err.name ==='ValidationError'){
+    if(err.name ==='ValidationError'){
         err = MongooseHandelErrors(err)
+      }         
+      
+    if(err.name==='CastError' && err.kind==='ObjectId') {
+        err = InvalidId (err);
       }
-
+  
        sendProdError(err, res);    
    } 
 }
