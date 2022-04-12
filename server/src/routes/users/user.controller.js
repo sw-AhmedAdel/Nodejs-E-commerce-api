@@ -20,6 +20,12 @@ function filterUser (obj , ...arr) {
   return filter;
 }
 
+async function httpMyProfile (req , res ,next) {
+  const user = req.user;
+  return res.status(200).json({
+    user,
+  })
+}
 
 async function httpCreateUSer(req , res ,next) {
   const user = req.body;
@@ -113,6 +119,7 @@ function httpLogout(req , res ) {
 
 
 module.exports = {
+  httpMyProfile,
   httpCreateUSer,
   httpGetAllUsers,
   httpLoginUser,

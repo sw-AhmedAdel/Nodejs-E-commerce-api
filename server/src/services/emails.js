@@ -8,7 +8,7 @@ const htmlToText= require('html-to-text');
 class email {
   constructor(user , url) {
     this.to = user.email;
-    this.firstName = user.split(' ')[0];
+    this.firstName = user.name.split(' ')[0];
     this.url = url;
     this.from = `Ahmed adel <${process.env.SENDGRID_EMAIL_FROM}>`
   }

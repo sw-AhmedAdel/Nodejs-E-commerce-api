@@ -59,6 +59,7 @@ userScheam.methods.toJSON= function(){
   const user = this;
   const userObject = user.toObject();
   delete userObject.password;;
+  delete userObject.passwordConfirm;
   return userObject;
 }
 
@@ -69,7 +70,7 @@ userScheam.methods.changePasswordAfter = function(jwtTime) {
    const user = this;
    if(user.passwordChangedAt) {
    const userPasswordTime = parseInt(user.passwordChangedAt.getTime() /1000 , 10);
-   return jwtTime << userPasswordTime
+   return jwtTime < userPasswordTime
    }
    return false;
 }
@@ -121,7 +122,7 @@ userScheam.pre('save' , async function(next) {
   const user = this;
   if(user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 12);
-    user.passwordConfirm = undefined;
+    user.passwordConfirm =  user.password ;
   }
 
   next();
@@ -135,4 +136,6 @@ userScheam.pre(/^find/ , function(next) {
 
 const User = mongoose.model('User' , userScheam);
 module.exports= User;
+
+
 
