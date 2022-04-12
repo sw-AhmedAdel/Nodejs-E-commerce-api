@@ -1,3 +1,4 @@
+const { findByIdAndRemove, findByIdAndUpdate } = require('./user.mongo');
 const User = require('./user.mongo');
 
 async function CreateUSer (user) {
@@ -21,7 +22,7 @@ async function findByrCedenitals(email , password) {
 }
 
 async function UpdateUSer (Updateuser , id) {
-  const user = await User.findByIdAndUpdate(id , UpdateUSer , {
+  const user = await User.findByIdAndUpdate(id , Updateuser , {
     new:true,
     runValidators:true,
   })
@@ -29,11 +30,20 @@ async function UpdateUSer (Updateuser , id) {
 }
 
 
+async function DeleteUser (id) {
+  const user = await findByIdAndUpdate(id , {
+    active: false
+  })
+
+  return user.acknowledgement === true;
+}
+
 
 module.exports = {
   CreateUSer,
   GetAllUsers,
   FindUser,
   findByrCedenitals,
-  UpdateUSer
+  UpdateUSer,
+  DeleteUser
 }

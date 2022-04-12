@@ -3,7 +3,8 @@ const {
   GetAllUsers,
   FindUser,
   findByrCedenitals,
-  UpdateUSer
+  UpdateUSer,
+  DeleteUser
 } = require('../../models/user.models');
 const sendCookieToRespond = require('../../authController/cookie');
 const appError = require('../../handelErrors/class.handel.error');
@@ -61,6 +62,18 @@ async function httpUpdateUSer (req , res , next) {
   })
 }
 
+async function httpDeleteUser(req , res ,next) {
+  const id = req.user._id;
+  const user = await DeleteUser(id);
+  if(!user) {
+    return next(new appError('something went wrong,please try again in fer mints', 400));
+  }
+  return res.status(200).json({
+    status:'success',
+    messae:'Your account has been deleted'
+  })
+}
+
 async function httpLoginUser (req , res ,next) {
   const {email , password} = req.body;
   if(!email || !password) {
@@ -90,11 +103,14 @@ function httpLogout(req , res ) {
    } 
 }
 
+
+
 module.exports = {
   httpCreateUSer,
   httpGetAllUsers,
   httpLoginUser,
   httpLogout,
   httpGetOneUser,
-  httpUpdateUSer
+  httpUpdateUSer,
+  httpDeleteUser
 }

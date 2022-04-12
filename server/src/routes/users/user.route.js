@@ -6,19 +6,22 @@ const {
   httpLoginUser,
   httpLogout,
   httpGetOneUser,
-  httpUpdateUSer
+  httpUpdateUSer,
+  httpDeleteUser
 } = require('./user.controller');
 
 const {
   catchAsync
 } =require('../../services/query');
 
-userRoute.post('/update/me', catchAsync(httpUpdateUSer));
 userRoute.post('/signup' , catchAsync(httpCreateUSer));
 userRoute.post('/login' , catchAsync(httpLoginUser));
 
 
 userRoute.get('/', catchAsync(httpGetAllUsers));
+userRoute.post('/update/me', catchAsync(httpUpdateUSer));
+userRoute.post('/delete/me', catchAsync(httpDeleteUser));
+
 userRoute.get('/logout', httpLogout);
 
 userRoute.get('/get/user/:id' , catchAsync(httpGetOneUser));

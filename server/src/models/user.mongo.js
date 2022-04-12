@@ -128,6 +128,11 @@ userScheam.pre('save' , async function(next) {
 })
 
 
+userScheam.pre(/^find/ , function(next) {
+  this.find({active: {$ne : false}})
+  next();
+})
+
 const User = mongoose.model('User' , userScheam);
 module.exports= User;
 
