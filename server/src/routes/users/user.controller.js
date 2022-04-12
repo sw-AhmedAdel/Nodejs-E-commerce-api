@@ -2,11 +2,22 @@ const {
   CreateUSer,
   GetAllUsers,
   FindUser,
-  findByrCedenitals
+  findByrCedenitals,
+  UpdateUSer
 } = require('../../models/user.models');
 const sendCookieToRespond = require('../../authController/cookie');
 const appError = require('../../handelErrors/class.handel.error');
  
+function filterUser (obj , ...arr) {
+  const filter = {};
+  Object.keys(obj).forEach((el) => {
+    if(arr.includes(el)){
+      filter[el] = obj[el]
+    }
+  })
+}
+
+
 async function httpCreateUSer(req , res ,next) {
   const user = req.body;
   const newUser = await CreateUSer(user);
@@ -32,6 +43,21 @@ async function httpGetOneUser (req , res ,next) {
   }
   return res.status(200).json({
     user,
+  })
+}
+
+
+async function httpUpdateUSer (req , res , next) {
+  
+  if(req.body.password || req.body.passwordConfirm) {
+   return next(new appError('please update password from v1/users/updatepassword', 400));
+  }
+  const id = req.user._id;
+  const filter = filterUser(req.body , 'name','email');
+  const user =await UpdateUSer(filter , id);
+  return res.status(200).json({
+    status:'success',
+    user
   })
 }
 
@@ -69,5 +95,6 @@ module.exports = {
   httpGetAllUsers,
   httpLoginUser,
   httpLogout,
-  httpGetOneUser
+  httpGetOneUser,
+  httpUpdateUSer
 }

@@ -20,9 +20,20 @@ async function findByrCedenitals(email , password) {
   return await User.findByrCedenitals(email , password);
 }
 
+async function UpdateUSer (Updateuser , id) {
+  const user = await User.findByIdAndUpdate(id , UpdateUSer , {
+    new:true,
+    runValidators:true,
+  })
+  return user;
+}
+
+
+
 module.exports = {
   CreateUSer,
   GetAllUsers,
   FindUser,
-  findByrCedenitals
+  findByrCedenitals,
+  UpdateUSer
 }
