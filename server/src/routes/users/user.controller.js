@@ -38,12 +38,24 @@ async function httpLoginUser (req , res ,next) {
   return res.status(201).json({
     user,
   })
+}
 
- 
+function httpLogout(req , res ) {
+  res.cookie('token' , 'Logout', {
+    httpOnly : true,
+    expires: new Date(Date.now())
+  })
+  if( process.env.NODE_ENV === 'development'){
+    return res.status(200).json({
+      status:'success',
+      messae:'You loged out'
+    })
+   } 
 }
 
 module.exports = {
   httpCreateUSer,
   httpGetAllUsers,
-  httpLoginUser
+  httpLoginUser,
+  httpLogout
 }
