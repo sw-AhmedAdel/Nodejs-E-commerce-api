@@ -18,6 +18,7 @@ async function httpGetAllProducts (req , res) {
   if(featurd) {
     obj.featurd ==='true' ? true : false;
   }*/
+  //console.log(req.signedCookies) 
   try{
   const {skip , limit} =getPagination(req.query);
   const filter = {...req.query};

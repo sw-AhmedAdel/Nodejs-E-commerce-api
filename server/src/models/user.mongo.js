@@ -11,14 +11,14 @@ const userScheam = new mongoose.Schema({
     type: String,
     required:[true , 'User must have a name'],
     minlength:[4,'User name must have more or equal 6 chars '],
-    minlength:[15,'User name must be leass  or equal 15 chars '],
+    maxlength:[15,'User name must be leass  or equal 15 chars '],
   },
    email: {
      type: String,
      required: [true,' please provide email'],
      unique: true,
-     validate : [validator.isEmail , 'please provide a valid email']
-  },   
+   }
+   ,
   password: {
     type:String ,
     required: [true, 'please provide your  password'],
@@ -53,15 +53,13 @@ const userScheam = new mongoose.Schema({
   timestamps:true
 })
 
-//getAuthToken
-/*
+
 userScheam.methods.toJSON= function(){
   const user = this;
   const userObject = user.toObject();
-  delete userObject,password;
-  delete userObject.passwordConfirm;
+  delete userObject.password;;
   return userObject;
-}*/
+}
 
 
 
@@ -122,7 +120,7 @@ userScheam.pre('save' , async function(next) {
   const user = this;
   if(user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 12);
-    user.passwordConfirm = user.passwordConfirm;
+    user.passwordConfirm = undefined;
   }
 
   next();
