@@ -8,7 +8,8 @@ const {
 } = require('../../models/user.models');
 const sendCookieToRespond = require('../../authController/cookie');
 const appError = require('../../handelErrors/class.handel.error');
- 
+const emails = require('../../services/emails');
+
 function filterUser (obj , ...arr) {
   const filter = {};
   Object.keys(obj).forEach((el) => {
@@ -23,6 +24,8 @@ function filterUser (obj , ...arr) {
 async function httpCreateUSer(req , res ,next) {
   const user = req.body;
   const newUser = await CreateUSer(user);
+  const url =`${req.protocol}://${req.get('host')}/products`;
+  await new emails(newUser , url).sendWelcome();
   sendCookieToRespond(newUser , res);
   return res.status(201).json({
     newUser,
@@ -70,7 +73,8 @@ async function httpDeleteUser(req , res ,next) {
  
   const id = req.user._id; 
   await DeleteUser(id);
- 
+  const url =`${req.protocol}://${req.get('host')}/signup`;
+  await new emails(req.user , url).DeleteUser();
   return res.status(200).json({
     status:'success',
     messae:'Your account has been deleted'

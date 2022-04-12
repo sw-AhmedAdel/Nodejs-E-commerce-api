@@ -21,7 +21,7 @@ userRoute.post('/signup' , catchAsync(httpCreateUSer));
 userRoute.post('/login' , catchAsync(httpLoginUser));
 
  
-userRoute.use(auth);
+userRoute.use(catchAsync(auth));
 userRoute.patch('/update/me', catchAsync(httpUpdateUSer));
 userRoute.delete('/delete/me', catchAsync(httpDeleteUser));
 userRoute.get('/logout', httpLogout);

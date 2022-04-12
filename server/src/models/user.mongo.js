@@ -113,7 +113,7 @@ userScheam.statics.findByrCedenitals= async function(email , password) {
 
 userScheam.methods.getAuthToken = function() {
   const user = this;
-  const token = jwt.sign({_id : user._id.toString()}, process.env.JWT_SECRET ,{expiresIn:'2s'})
+  const token = jwt.sign({_id : user._id.toString()}, process.env.JWT_SECRET ,{expiresIn:process.env.JWT_EXPIRES_IN})
   return token;
 }
 

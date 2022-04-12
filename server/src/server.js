@@ -29,7 +29,7 @@ async function startServer () {
     await products.deleteMany();
     await loadALLProducts();
   }
-  await users.deleteMany();
+  //await users.deleteMany();
   server.listen(PORT , () => {
   console.log('running server');
   })

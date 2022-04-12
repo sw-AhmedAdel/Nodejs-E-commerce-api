@@ -52,7 +52,7 @@ function sendProdError (err , res) {
 
 
 
-function handelErrorMiddleware (err , req , res , next)  {
+const handelErrorMiddleware=  (err , req , res , next) =>  {
   err.statusCode = err.statusCode || 500 ; // 500 > internal server error
   err.status = err.status || 'fail';
 

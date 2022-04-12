@@ -11,7 +11,6 @@ async function auth (req , res , next) {
   }
   const token = req.signedCookies.token
 
-  try{
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   const user = await User.findOne({
     _id : decoded._id
@@ -25,23 +24,7 @@ async function auth (req , res , next) {
   
   req.user = user;
   next();
-}
-catch(err) {
-  if (err.name === 'JsonWebTokenError') {
-    return res.status(401).json({
-      status:'fail',
-      message:' Invalid token. Please log in again!',
-    })
-  }
 
-  if (err.name === 'TokenExpiredError') {
-    return res.status(401).json({
-      status:'fail',
-      message:' Your token has expired! Please log in again.',
-    })
-  }
- 
-}
 }
 
 module.exports= auth;
