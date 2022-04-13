@@ -11,15 +11,16 @@ const {
   httpDeleteUser
 } = require('./user.controller');
 
-const {
-  catchAsync
-} =require('../../services/query');
 
 const  {
   httpForgotPassword,
   httpResetPassword,
   httpUpdatePassword
 } = require('../../password/password');
+
+const {
+  catchAsync
+} =require('../../services/query');
 
 const authenticate = require('../../authController/authenticate');
 const authorized = require('../../authController/authorized');

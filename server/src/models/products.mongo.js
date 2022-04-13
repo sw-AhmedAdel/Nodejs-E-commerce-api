@@ -68,7 +68,12 @@ const productScheam = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-
+  
+  ratingsQuantity:{
+    type: Number,
+    default: 0,
+  }
+   ,
   user: { // this points to the admin that created the product
     type: mongoose.Schema.Types.ObjectId,
     ref :'User',

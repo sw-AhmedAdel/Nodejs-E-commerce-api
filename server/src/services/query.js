@@ -44,6 +44,14 @@ class filterFun  {
 }
 
 
+ function checkPermations (requestUser , resouceUserID) {
+   if(requestUser.role ==='admin') return  true;
+   else if(requestUser._id === resouceUserID.toString()) return true;
+   else 
+    return false;
+    
+}
+
 const catchAsync = fn => {
   return (req , res , next) => {
     fn(req , res , next).catch(next);
@@ -54,5 +62,6 @@ const catchAsync = fn => {
 module.exports = {
   getPagination,
   filterFun,
-  catchAsync
+  catchAsync,
+  checkPermations
 }

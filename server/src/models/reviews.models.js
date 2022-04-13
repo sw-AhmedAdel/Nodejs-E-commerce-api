@@ -1,21 +1,22 @@
-const reviews = require('./reviews.mongo');
-const tours = require('./tours.mongo');
+const reviews = require('./reviews.mongo')
+const products = require('./products.mongo');
 
-async function GetAllReviews (filter) {
-  return await reviews.find(filter)
+async function GetAllReviews (filter ) {
+  return await reviews.find(filter )
 }
 
-async function FindTour(id) {
-  return await tours.findById(id);
+async function FindProduct(id) {
+  return await products.findById(id);
 }
 
 
-async function CreateReview (reviewBody , user_id , tour_id ) {
+async function CreateReview (reviewBody , user_id , productid ) {
  // const newReview = await reviews.create(review)
    const review = Object.assign(reviewBody, {
-     tour:tour_id,
+    product:productid,
      user:user_id,
    })
+ 
    const newReview  = new reviews(review);
    await newReview.save();
    return newReview;
@@ -44,7 +45,7 @@ async function DeleteReview(id) {
 module.exports = {
   GetAllReviews,
   CreateReview,
-  FindTour,
+  FindProduct,
   UpdateReview,
   findReview,
   DeleteReview
