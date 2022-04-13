@@ -1,16 +1,66 @@
 const {
    GetAllProducts,
    GetProductsByPrice,
-   GetProductsStats
-   ,GetProductsForEachCompany
+   GetProductsStats,
+   GetProductsForEachCompany,
+   FindProduct,
+   CreateNewProduct,
+   UpdateProduct
 } = require('../../models/products.models');
 
+const appError = require('../../handelErrors/class.handel.error');
 
 const {
   getPagination,
-  filterFun,
-  
+  filterFun,  
 } = require('../../services/query');
+
+async function httpCreateNewProduct(req , res, next) {
+  req.body.user = req.user._id;
+  const newProduct = await CreateNewProduct(req.body);
+  return res.status(201).json({
+    status:'success',
+    data: newProduct
+  })
+}
+
+async function httpUpdateProduct(req, res , next) {
+  const {productid} = req.params;
+  const editProduct = req.body;
+  let product = await FindProduct(productid);
+  if(!product) {
+    return next(new appError('this product is not exits', 400));
+  }
+   product = await UpdateProduct(editProduct , productid);
+  return res.status(200).json({
+    status:'success',
+    product,
+  })
+}
+
+
+async function httpGetSingleProduct(req , res, next) {
+  const Product = await FindProduct(req.params.id);
+  if(!Product) {
+    return next(new appError('this product is not exits', 400));
+  }
+  return res.status(200).json({
+    status:'success',
+    data: Product
+  })
+}
+
+async function httpDeleteOneProduct(req, res , next) {
+  const {productid} = req.params;
+  const product = await FindProduct(productid);
+  if(!product) {
+    return next(new appError('this product is not exits', 400));
+  }
+  await product.remove();
+  return res.status(200).json({
+    status:'success'
+  })
+}
 
 async function httpGetAllProducts (req , res) {
   /*const {featurd} = req.query;
@@ -73,8 +123,12 @@ async function httpGetProductsForEachCompany(req , res) {
 }
 
 module.exports = {
+  httpCreateNewProduct,
+  httpGetSingleProduct,
   httpGetAllProducts,
   httpGetProductsByPrice,
   httpGetProductsStats,
-  httpGetProductsForEachCompany
+  httpGetProductsForEachCompany,
+  httpUpdateProduct,
+  httpDeleteOneProduct
 }

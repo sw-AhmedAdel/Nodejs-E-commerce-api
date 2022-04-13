@@ -5,11 +5,16 @@ const path = require('path');
 async function populateAllProducts() {
   const getProducts = JSON.parse( fs.readFileSync(path.join(__dirname,'..','..', 'data', 'products.json')));
   for(const Product of getProducts) {
-   
+   console.log(Product)
     await CreateNewProduct(Product);
   }
 }
 
+async function FindProduct(id) {
+  return await products.findOne({
+    _id : id
+  })
+}
 
 async function loadALLProducts() {
     const firstProduct = await products.findOne({
@@ -30,6 +35,21 @@ async function loadALLProducts() {
 async function CreateNewProduct (Product) {
   const newProduct = new products(Product);
   await newProduct.save();
+  return newProduct
+}
+
+async function UpdateProduct(editProduct , id) {
+  /*
+  const product = await products.findOneAndUpdate( {_id : id} , editProduct , {
+    new : true,
+    runValidators:true,
+  })
+  */
+  const product = await products.findByIdAndUpdate(id , editProduct , {
+    new : true,
+    runValidators:true,
+  })
+  return product;
 }
 
 async function GetAllProducts (filter , skip , limit ,sort ,fields) {
@@ -173,5 +193,7 @@ module.exports = {
   GetAllProducts,
   GetProductsByPrice,
   GetProductsStats,
-  GetProductsForEachCompany
+  GetProductsForEachCompany,
+  FindProduct,
+  UpdateProduct
 }
