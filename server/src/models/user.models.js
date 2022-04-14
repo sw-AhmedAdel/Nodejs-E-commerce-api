@@ -1,5 +1,4 @@
-const { findByIdAndRemove, findByIdAndUpdate } = require('./user.mongo');
-const User = require('./user.mongo');
+ const User = require('./user.mongo');
 
 async function CreateUSer (user) {
   const newUSer = new User(user); // await User.create(user)

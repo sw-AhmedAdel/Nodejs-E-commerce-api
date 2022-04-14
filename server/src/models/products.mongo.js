@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const productScheam = new mongoose.Schema({
+
+const productSchema = new mongoose.Schema({
   name : {
     type : String,
     required: [true, 'Product name must be provided'],
@@ -64,16 +65,22 @@ const productScheam = new mongoose.Schema({
     type: Number,
     default: 15,
   },
-  averageRatings : {
+  ratingsAverage : {
+    type:Number,
+    min:[1 , 'Rating must be above 1'],
+    max:[5 ,'Rating must be bellow or equal 5.0'],
+    set: val => Math.round(val * 10) / 10 // 4.7
+  },
+  numberOfReviews: {
     type: Number,
     default: 0,
   },
-  
-  ratingsQuantity:{
+
+   ratingQuantity:{
     type: Number,
     default: 0,
-  }
-   ,
+   }
+  ,
   user: { // this points to the admin that created the product
     type: mongoose.Schema.Types.ObjectId,
     ref :'User',
@@ -85,18 +92,23 @@ const productScheam = new mongoose.Schema({
     default: Date.now(),
   }
 } , {
-  toJSON:{virtuals : true },
-  toObject:{virtuals: true },
+  toJSON: {virtuals : true},
+  toObject: {virtuals : true}
 });
 
-//use virtuals when i get products i want to see the all review on it 
-productScheam.virtual('reviews' , {
-  ref:'review',
+productSchema.virtual('reviews' ,{
+  path:'review',
   localField:'_id',
   foreignField:'product',
-  //match: {rating : 1}
-  justOne: false,
+  
 })
 
-const products = mongoose.model('Product' , productScheam);
+
+productSchema.pre('remove' , async function(next) {
+  await this.model('review').deleteMany({product : this.product_id})
+  next();
+ 
+})
+
+const products = mongoose.model('Product' , productSchema);
 module.exports = products;

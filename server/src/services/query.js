@@ -45,8 +45,8 @@ class filterFun  {
 
 
  function checkPermations (requestUser , resouceUserID) {
-   if(requestUser.role ==='admin') return  true;
-   else if(requestUser._id === resouceUserID.toString()) return true;
+    if(requestUser.role ==='admin') return  true;
+   else if(requestUser._id.toString()  === resouceUserID.toString()) return true;
    else 
     return false;
     

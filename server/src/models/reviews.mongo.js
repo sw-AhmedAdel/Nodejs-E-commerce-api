@@ -36,32 +36,34 @@ const  reviewsScheam = new mongoose.Schema({
 
 reviewsScheam.statics.calcAverageRatings = async function (product_id) {
   const stats = await reviews.aggregate([
-
     {
       $match: {
-        product : product_id, // means get me all reviews that belongs to that tour id
+        product : product_id, //_id this is product id and product_id that belongs to the reivew
+        //means get me all reviews that belong to this product
       }
     }
     ,
     {
       $group: {// group all reviews to so some stats
-       _id:'$product', // group all them using the tour id
-       numRatings: {$sum : 1},
-       numAvg : {$avg:'$rating'},
+       _id:'$product', // group all them using the prodit
+       ratingsAverage :  {$avg: '$rating'},
+       numberOfReviews: {$sum : 1},
       }
     }
+    ,
+    
   ])
-
+ 
   if(stats.length > 0) {
    await products.findByIdAndUpdate(product_id , {
-    averageRatings: stats[0].numAvg,
-    ratingsQuantity: stats[0].numRatings
+    ratingsAverage: stats[0].ratingsAverage, // stats[0]?.numAvg || 0
+    numberOfReviews: stats[0].numberOfReviews
   })
   }
   else {
     await products.findByIdAndUpdate(product_id , {
-      ratingsAverage: 0,
-      ratingsQuantity:0,
+      averageRatings: 0,
+      numberOfReviews: 0
     })
   }
 } 

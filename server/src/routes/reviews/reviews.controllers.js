@@ -85,24 +85,23 @@ async function httpUpdateMyReview(req , res ,next) {
   })
 }
 async function httpDeleteMyReview (req , res , next) {
-
-  if(!req.params.reviewid){
+  const  {reviewid} = req.params;
+   if(!reviewid){
     return next(new appError('please provide us with review id, 404'));
   }
   
   const filter = {
-    _id: req.params.reviewid
+    _id: reviewid
   }
 
   const review = await findReview(filter);
   if(!review) {
     return next(new appError('Review was not found'));
   }
- 
   if(!(checkPermations (req.user , review.user)))  {
     return next (new appError('you are not authorized to delete this review'));
   }
-  
+  await DeleteReview(reviewid)
   return res.status(200).json({
     status:'success',
     message:'your review has been deleted'

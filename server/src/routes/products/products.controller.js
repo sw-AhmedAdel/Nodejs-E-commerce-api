@@ -57,7 +57,7 @@ async function httpDeleteOneProduct(req, res , next) {
  if(!product) {
    return next(new appError('this product is not exits', 400));
  }
- await product.remove();
+ await product.remove();// use it to use middleware to delete all reviews
  return res.status(200).json({
    status:'success'
  })
