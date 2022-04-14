@@ -4,16 +4,15 @@ const path = require('path');
 
 async function populateAllProducts() {
   const getProducts = JSON.parse( fs.readFileSync(path.join(__dirname,'..','..', 'data', 'products.json')));
-  for(const Product of getProducts) {
-   console.log(Product)
-    await CreateNewProduct(Product);
-  }
+   
+    await products.create(getProducts);
+  
 }
 
 async function FindProduct(id) {
   return await products.findOne({
     _id : id
-  })
+  }).populate('reviews');
 }
 
 async function loadALLProducts() {
@@ -57,8 +56,12 @@ async function GetAllProducts (filter , skip , limit ,sort ,fields) {
   .skip(skip)
   .limit(limit)
   .select(fields)
-  .sort(sort);
+  .sort(sort)
+  .populate('reviews');
 }
+
+
+
 async function GetProductsByPrice (min , max) {
   const prod = await products.aggregate([
     {

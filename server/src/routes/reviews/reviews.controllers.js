@@ -10,8 +10,8 @@ const {
 const appError = require('../../handelErrors/class.handel.error');
 const {checkPermations} = require('../../services/query');
 
-async function httpGetOneReview (req ,res ,next) {
- 
+
+async function httpGetOneReview (req ,res ,next) { 
  const {reviewid} = req.params;
  if(!reviewid) {
    return next(new appError('Please provide the review id', 400));
@@ -41,6 +41,7 @@ async function httpGetAllReviews(req , res , next) {
      data: reviews,
    })
 }
+
 
 
 
@@ -137,5 +138,5 @@ module.exports = {
   httpGetOneReview,
   httpGetAllReviews,
   httpUpdateMyReview,
-  httpDeleteMyReview
+  httpDeleteMyReview,
 }

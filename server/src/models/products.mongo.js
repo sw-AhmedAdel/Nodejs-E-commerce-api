@@ -84,7 +84,19 @@ const productScheam = new mongoose.Schema({
     type : Date ,
     default: Date.now(),
   }
+} , {
+  toJSON:{virtuals : true },
+  toObject:{virtuals: true },
 });
+
+//use virtuals when i get products i want to see the all review on it 
+productScheam.virtual('reviews' , {
+  ref:'review',
+  localField:'_id',
+  foreignField:'product',
+  //match: {rating : 1}
+  justOne: false,
+})
 
 const products = mongoose.model('Product' , productScheam);
 module.exports = products;

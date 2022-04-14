@@ -8,7 +8,8 @@ const {
   httpGetProductsForEachCompany,
   httpGetSingleProduct,
   httpUpdateProduct,
-  httpDeleteOneProduct
+  httpDeleteOneProduct,
+  httpGetSingleProductReviews
 }  = require('./products.controller');
 
 const {
@@ -22,8 +23,9 @@ const authorized = require('../../authController/authorized');
 productsRoute.get('/' , catchAsync( httpGetAllProducts));
 productsRoute.get('/single/product/:id' , catchAsync(httpGetSingleProduct));
 productsRoute.get('/min/max/price',httpGetProductsByPrice)
-productsRoute.get('/stats' , httpGetProductsStats);
-productsRoute.get('/company',httpGetProductsForEachCompany)
+productsRoute.get('/stats' , catchAsync( httpGetProductsStats));
+productsRoute.get('/company',catchAsync( httpGetProductsForEachCompany))
+productsRoute.get('/single/product/:productid/review' , catchAsync(httpGetSingleProductReviews))
 
 productsRoute.use(catchAsync(authenticate));
 productsRoute.use(authorized('admin'));
