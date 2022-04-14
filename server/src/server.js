@@ -14,6 +14,7 @@ const {loadALLProducts} = require('../src/models/products.models');
 const products = require('./models/products.mongo');
 const users = require('./models/user.mongo');
 const reviews = require('./models/reviews.mongo')
+const orders = require('./models/orders.mongo')
 async function startServer () {
  
   await startMongo();
@@ -31,6 +32,7 @@ async function startServer () {
     await loadALLProducts();
   }
   //await users.deleteMany();
+  //await orders.deleteMany()
   await reviews.deleteMany();
   server.listen(PORT , () => {
   console.log('running server');
