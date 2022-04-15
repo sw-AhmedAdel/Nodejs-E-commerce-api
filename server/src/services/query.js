@@ -26,6 +26,8 @@ class filterFun  {
   }
 
   //?sortBy=-price,rating
+  //use xss-clean to prevent user to use dub filed coz if he used 2 price like price=,price=
+  //express will take these dub and put them in array so can not use eplit on arr so this is a problem
   sortBy() {
     if(this.query.sortBy) {
       return this.query.sortBy.split(',').join(' ')
@@ -44,7 +46,7 @@ class filterFun  {
 }
 
 
- function checkPermations (requestUser , resouceUserID) {
+ function checkPermissions (requestUser , resouceUserID) {
     if(requestUser.role ==='admin') return  true;
    else if(requestUser._id.toString()  === resouceUserID.toString()) return true;
    else 
@@ -63,5 +65,5 @@ module.exports = {
   getPagination,
   filterFun,
   catchAsync,
-  checkPermations
+  checkPermissions
 }

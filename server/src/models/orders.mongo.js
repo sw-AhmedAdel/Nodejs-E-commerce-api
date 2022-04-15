@@ -34,8 +34,8 @@ const orderShcema = new mongoose.Schema({
   ,
   status: {
     type:String,
-    enum:['pending' , 'failed', 'paid', 'deliverd' ,'canceled'],
-    default:'pending',
+    //enum:['pending' , 'failed', 'paid', 'deliverd' ,'canceled'],
+    default:'paid',
   }
   ,
   user : {
@@ -56,5 +56,11 @@ const orderShcema = new mongoose.Schema({
 })
 
 
+
+orderShcema.pre(/^find/ , function(next) {
+  //this.populate('user');
+})
+
+ 
 const orders =mongoose.model('order' , orderShcema);
 module.exports = orders;

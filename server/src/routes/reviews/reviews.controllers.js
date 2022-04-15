@@ -8,7 +8,7 @@ const {
 } = require('../../models/reviews.models');
  
 const appError = require('../../handelErrors/class.handel.error');
-const {checkPermations} = require('../../services/query');
+const {checkPermissions} = require('../../services/query');
 
 
 async function httpGetOneReview (req ,res ,next) { 
@@ -98,7 +98,7 @@ async function httpDeleteMyReview (req , res , next) {
   if(!review) {
     return next(new appError('Review was not found'));
   }
-  if(!(checkPermations (req.user , review.user)))  {
+  if(!(checkPermissions (req.user , review.user)))  {
     return next (new appError('you are not authorized to delete this review'));
   }
   await DeleteReview(reviewid)

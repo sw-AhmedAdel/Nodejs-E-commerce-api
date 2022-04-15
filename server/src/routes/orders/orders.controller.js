@@ -1,12 +1,13 @@
 const products = require('../../models/products.mongo');
-const {checkPermations} = require('../../services/query');
+const {checkPermissions} = require('../../services/query');
 const appError = require('../../handelErrors/class.handel.error');
 const stripe = require('stripe')(process.env.STRIPTE_SECRET_KEY);
 require('dotenv').config();
 
 const {
   CreateOrder,
-  GetALLOrders
+  GetALLOrders,
+  FindOurder
 } = require('../../models/orders.models');
  
 
@@ -99,48 +100,50 @@ async function getCheckoutSession ( req, res,order , user  , next) {
 }
 
 
-
-
-
-
-
 async function httpGetALLOrders( req, res ,next) {
- 
   return res.status(200).json(await GetALLOrders())
 }
 
+
 async function httpSingleOrder( req, res ,next) {
+  const {orderid} = req.params;
+  const order = await FindOurder(orderid);
+  if(!order) {
+    return next (new appError('Order was not found'));
+  }
+
+  if(!checkPermissions(req.user , order.user)) {
+    return next (new appError('You do not have permissions to do this action'));
+  }
+
   return res.status(200).json({
-    ok: true
+    status:'success',
+    data : order
   })
 }
 
 
 async function httpGetCurrentUserOrders( req, res ,next) {
+  const filter = {
+    user : req.user._id
+  }
+  const orders = await GetALLOrders(filter);
   return res.status(200).json({
-    ok: true
+    status:'success',
+    results: orders.length ,
+    data: orders
   })
 }
 
 
 
-async function httpUpdateOrder( req, res ,next) {
-  return res.status(200).json({
-    ok: true
-  })
-}
 
-async function httpShowMyOrders( req, res ,next) {
-  return res.status(200).json({
-    ok: true
-  })
-}
+ 
+
 
 module.exports = {
 httpCreateOrder,
 httpGetALLOrders,
 httpGetCurrentUserOrders,
-httpShowMyOrders,
 httpSingleOrder,
-httpUpdateOrder
-}
+ }

@@ -6,11 +6,17 @@ async function CreateOrder(order) {
   return newOrder
 }
 
-async function GetALLOrders(){
-  return await orders.find();
+async function GetALLOrders(filter){
+  return await orders.find(filter);
 }
 
+async function FindOurder (id) {
+  return await orders.findOne({
+    _id : id
+  })
+}
 module.exports = {
   CreateOrder,
-  GetALLOrders
+  GetALLOrders,
+  FindOurder
 }

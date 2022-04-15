@@ -103,7 +103,9 @@ productSchema.virtual('reviews' ,{
   
 })
 
-
+productSchema.index({price: 1});
+productSchema.index({company : 1});
+productSchema.index({category : 1});
 productSchema.pre('remove' , async function(next) {
   await this.model('review').deleteMany({product : this.product_id})
   next();
