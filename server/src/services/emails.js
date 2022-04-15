@@ -61,6 +61,10 @@ class email {
     async sendPasswordreset() {
       await this.send('passwordReset' ,'Your password token (valid for onlu 10 mints)');
     }
+
+    async verificationToken(){
+      await this.send('verificationToken' , 'your verification Token')
+    }
   
 }
 

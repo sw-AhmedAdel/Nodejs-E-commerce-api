@@ -9,6 +9,8 @@ const {
 const sendCookieToRespond = require('../../authController/cookie');
 const appError = require('../../handelErrors/class.handel.error');
 const emails = require('../../services/emails');
+const crypto = require('crypto');
+const User = require('../../models/user.mongo');
 
 function filterUser (obj , ...arr) {
   const filter = {};
@@ -29,14 +31,60 @@ async function httpMyProfile (req , res ,next) {
 
 async function httpCreateUSer(req , res ,next) {
   const user = req.body;
-  const newUser = await CreateUSer(user);
-  const url =`${req.protocol}://${req.get('host')}/products`;
-  await new emails(newUser , url).sendWelcome();
-  sendCookieToRespond(newUser , res);
+  const token = await CreateUSer(user);
+
+  const url =`${req.protocol}://${req.get('host')}/v1/verifyemail/${token}`;
+  try{
+  await new emails(user , url).verificationToken();
+  //sendCookieToRespond(newUser , res);
   return res.status(201).json({
-    newUser,
+    message:'success: please check your account to verify your account',
+  })
+} catch(err) {
+  return next (new appError('Could not create account, please try again later', 400));
+}
+}
+
+async function httpVerifyAccount (req, res ,next) {
+  const hashedtoken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+  const user = await FindUser({
+    verificationToken : hashedtoken,
+  })
+  if(!user) {
+    
+    return next (new appError('Invalid token or it is expired')) 
+  }
+  user.isVerified =true,
+  user.Verified=Date.now()
+  user.verificationToken=undefined;
+  await user.save();
+  sendCookieToRespond(user , res);
+  return res.status(200).json({
+    status:'success',
+    messae:'You can login'
+})
+
+}
+
+async function httpLoginUser (req , res ,next) {
+  const {email , password} = req.body;
+  if(!email || !password) {
+    return next(new appError ('Please provide us your email and password', 400));
+  }
+
+  const user = await findByrCedenitals(email , password);
+  if(!user) {
+    return next(new appError ('Unable to login', 404));
+  }
+  if(user.isVerified === false) {
+  return next (new appError('Please check your email to verify your account', 401))
+  }
+  sendCookieToRespond(user , res);
+  return res.status(201).json({
+    user,
   })
 }
+
 
 async function httpGetAllUsers(req, res ,next) {
 
@@ -49,7 +97,10 @@ async function httpGetAllUsers(req, res ,next) {
 
 async function httpGetOneUser (req , res ,next) {
   const id = req.params.id;
-  const user = await FindUser(id);
+  const filter = {
+    _id : id
+  }
+  const user = await FindUser(filter);
   if(!user) {
     return next(new appError('User is not exits', 404));
   }
@@ -87,21 +138,6 @@ async function httpDeleteUser(req , res ,next) {
   })
 }
 
-async function httpLoginUser (req , res ,next) {
-  const {email , password} = req.body;
-  if(!email || !password) {
-    return next(new appError ('Please provide us your email and password', 400));
-  }
-
-  const user = await findByrCedenitals(email , password);
-  if(!user) {
-    return next(new appError ('Unable to login', 404));
-  }
-  sendCookieToRespond(user , res);
-  return res.status(201).json({
-    user,
-  })
-}
 
 function httpLogout(req , res ) {
   res.cookie('token' , 'Logout', {
@@ -126,5 +162,6 @@ module.exports = {
   httpLogout,
   httpGetOneUser,
   httpUpdateUSer,
-  httpDeleteUser
+  httpDeleteUser,
+  httpVerifyAccount
 }

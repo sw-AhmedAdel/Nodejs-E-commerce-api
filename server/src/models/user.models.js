@@ -3,17 +3,16 @@
 async function CreateUSer (user) {
   const newUSer = new User(user); // await User.create(user)
   await newUSer.save();
-  return newUSer;
+  const token = await newUSer.createverificationToken();
+  return token;
 }
 
 async function GetAllUsers() {
   return await User.find();
 }
 
-async function FindUser (userId){
- return await User.findOne({
-   _id : userId
- })
+async function FindUser (filter){
+ return await User.findOne(filter)
 }
 
 async function findByrCedenitals(email , password) {

@@ -8,7 +8,8 @@ const {
   httpLogout,
   httpGetOneUser,
   httpUpdateUSer,
-  httpDeleteUser
+  httpDeleteUser,
+  httpVerifyAccount
 } = require('./user.controller');
 
 
@@ -29,7 +30,7 @@ userRoute.post('/signup' , catchAsync(httpCreateUSer));
 userRoute.post('/login' , catchAsync(httpLoginUser));
 userRoute.post('/forgotpassword' ,  catchAsync(httpForgotPassword));
 userRoute.patch('/resetpassword/:token' , catchAsync(httpResetPassword));
- 
+userRoute.get('/verifyemail/:token', catchAsync(httpVerifyAccount));
 userRoute.use(catchAsync(authenticate));
 userRoute.get('/me', catchAsync(httpMyProfile));
 userRoute.patch('/update/me', catchAsync(httpUpdateUSer));

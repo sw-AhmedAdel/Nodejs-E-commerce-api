@@ -5,6 +5,8 @@ const email = require('../services/emails');
 const sendCookieToRespond = require('../authController/cookie');
 
 
+
+
 async function httpForgotPassword (req , res, next) {
   if(!req.body.email) {
     return next(new appError('please provide your emai' , 400));
