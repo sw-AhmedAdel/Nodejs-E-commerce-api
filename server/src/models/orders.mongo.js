@@ -56,11 +56,14 @@ const orderShcema = new mongoose.Schema({
 })
 
 
-
+/*
 orderShcema.pre(/^find/ , function(next) {
-  //this.populate('user');
-})
+  this.populate('user')
+  next();
+})*/
+
+
 
  
-const orders =mongoose.model('order' , orderShcema);
-module.exports = orders;
+const Order =mongoose.model('Order' , orderShcema);
+module.exports = Order;

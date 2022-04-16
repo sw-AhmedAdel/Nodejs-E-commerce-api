@@ -101,7 +101,12 @@ async function getCheckoutSession ( req, res,order , user  , next) {
 
 
 async function httpGetALLOrders( req, res ,next) {
-  return res.status(200).json(await GetALLOrders())
+  const orders = await GetALLOrders()
+  return res.status(200).json({
+    status:'success',
+    results:orders.length,
+    data: orders
+  })
 }
 
 

@@ -10,8 +10,7 @@ const sendCookieToRespond = require('../../authController/cookie');
 const appError = require('../../handelErrors/class.handel.error');
 const emails = require('../../services/emails');
 const crypto = require('crypto');
-const User = require('../../models/user.mongo');
-
+ 
 function filterUser (obj , ...arr) {
   const filter = {};
   Object.keys(obj).forEach((el) => {
@@ -76,9 +75,11 @@ async function httpLoginUser (req , res ,next) {
   if(!user) {
     return next(new appError ('Unable to login', 404));
   }
-  if(user.isVerified === false) {
+ 
+  if(!user.isVerified) {
   return next (new appError('Please check your email to verify your account', 401))
   }
+
   sendCookieToRespond(user , res);
   return res.status(201).json({
     user,
