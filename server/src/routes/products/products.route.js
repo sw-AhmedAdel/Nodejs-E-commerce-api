@@ -9,7 +9,9 @@ const {
   httpGetSingleProduct,
   httpUpdateProduct,
   httpDeleteOneProduct,
-  httpGetSingleProductReviews
+  httpGetSingleProductReviews,
+  uploadProductsImages,
+  resizeProductsImages
 }  = require('./products.controller');
 
 const {
@@ -30,6 +32,6 @@ productsRoute.get('/single/product/:productid/review' , catchAsync(httpGetSingle
 productsRoute.use(catchAsync(authenticate));
 productsRoute.use(authorized('admin'));
 productsRoute.post('/' , catchAsync(httpCreateNewProduct));
-productsRoute.patch('/update/:productid' , catchAsync(httpUpdateProduct));
+productsRoute.patch('/update/:productid',uploadProductsImages,catchAsync(resizeProductsImages) , catchAsync(httpUpdateProduct));
 productsRoute.delete('/:productid' , catchAsync(httpDeleteOneProduct));
 module.exports= productsRoute;

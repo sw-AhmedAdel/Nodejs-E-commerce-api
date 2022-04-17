@@ -16,6 +16,56 @@ const {
  filterFun,  
 } = require('../../services/query');
 
+const multer = require('multer');
+const sharp = require('sharp');
+
+const multerStorage = multer.memoryStorage();
+const multerFilter = (req , file , cb) => {
+  if(file.mimetype.startsWith('image')) 
+  {
+    cb(null , true);
+  }else {
+    cb(new appError ('Not an image! please upload only images', 400 ) , false);
+  }
+}
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter : multerFilter,
+})
+
+const uploadProductsImages = upload.fields([
+  {name :'imageCover' , maxCount: 1},
+  {name: 'images' , maxCount: 3},
+])
+
+const resizeProductsImages = async (req , res , next) => {
+ if(req.files.imageCover) {
+  req.body.imageCover=`product-${req.params.productid}-${Date.now()}.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+  .resize({width :500 , height: 500})
+  .toFormat('jpeg')
+  .jpeg({quality:90})
+  .toFile(`public/images/products/${req.body.imageCover}`);
+ }
+  
+
+if(req.files.images) {
+ req.body.images = [];
+ await Promise.all(req.files.images.map( async (file ,i) => {
+   const filename = `product-${req.params.productid}-${Date.now()}-${ i + 1 }.jpeg`;
+   await sharp(file.buffer)
+   .resize({width :300 , height: 300})
+   .toFormat('jpeg')
+   .jpeg({quality:90})
+   .toFile(`public/images/products/${filename}`);
+
+   req.body.images.push(filename);
+ }))
+}
+ next();
+}
+
 async function httpCreateNewProduct(req , res, next) {
  req.body.user = req.user._id;
  const newProduct = await CreateNewProduct(req.body);
@@ -146,5 +196,8 @@ module.exports = {
  httpGetProductsForEachCompany,
  httpUpdateProduct,
  httpDeleteOneProduct,
- httpGetSingleProductReviews
+ httpGetSingleProductReviews,
+ uploadProductsImages,
+ resizeProductsImages
+ 
 }
