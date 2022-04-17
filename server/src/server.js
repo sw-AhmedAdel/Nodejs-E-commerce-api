@@ -33,7 +33,7 @@ async function startServer () {
   }
   //await users.deleteMany();
   //await orders.deleteMany()
-  await reviews.deleteMany();
+  //await reviews.deleteMany();
   server.listen(PORT , () => {
   console.log('running server');
   })

@@ -9,7 +9,7 @@ const {
  
 const appError = require('../../handelErrors/class.handel.error');
 const {checkPermissions} = require('../../services/query');
-
+const Order = require('../../models/orders.mongo');
 
 async function httpGetOneReview (req ,res ,next) { 
  const {reviewid} = req.params;
@@ -51,13 +51,21 @@ if(!req.params.productid){
 }
  const user_id = req.user._id;
  const productid= req.params.productid;
-// must check in orders for userid and product it to make sure he bougth this product
+
  const review = req.body;
  const product = await FindProduct(productid);
   if(!product) {
     return next(new appError('No product was found', 404));
   }
   
+  const didOrderIt = await Order.findOne({
+    user: user_id,
+    'orderItems.product': productid
+  })
+  
+  if(!didOrderIt) {
+    return next(new appError('You must by the product to be able to make a review', 400));
+  }
   const newReview = await CreateReview(review , user_id , productid);
   return res.status(201).json({
     status:'success',
