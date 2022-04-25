@@ -38,7 +38,7 @@ async function httpCreateOrder( req, res ,next) {
     product: _id,
   }
   orderItems = [...orderItems , getSingleProduct];
-  subTotal = price * item.amount; 
+  subTotal += price * item.amount; 
 
  }
 

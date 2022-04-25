@@ -14,3 +14,5 @@ function sendCookieToRespond ( user , res) {
 }
 
 module.exports = sendCookieToRespond;
+
+

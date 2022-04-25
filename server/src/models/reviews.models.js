@@ -2,8 +2,7 @@ const reviews = require('./reviews.mongo')
 const products = require('./products.mongo');
 
 async function GetAllReviews (filter ) {
-  //eatch review has id for product and user so use populate to show them
-  //so using populate when the model it seld has ref id to another model
+ 
   return await reviews.find(filter ).populate({
     path:'product',
     select:'name price company'
