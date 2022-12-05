@@ -1,4 +1,5 @@
-designed an algorithm for 
+designed an algorithm for
+ 
  Implemented JWT authentication with cookies and authorization.
  Implemented signup, login, logout, express errors middleware.Forgot reset update password, sending 
  emails, filter queries.
